@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <title>Simple HTML</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- LOAD Tone.js from unpkg -->
+  <script src="https://unpkg.com/tone"></script>
+  <script>
+    function playNote() {
+      // create a synth
+      const synth = new Tone.Synth().toDestination();
+      // play a note from that synth
+      synth.triggerAttackRelease("C4", "8n");
+    }
+
+    function playFiltered() {
+      // const filter = new Tone.Filter(20000, "lowpass")
+      const fft = new Tone.FFT(16384);
+      let [minF, maxF] = [40000, -1]
+      for (let index = 0; index < 16384; index++) {
+        let currentF = fft.getFrequencyOfIndex(index);
+        if (currentF < minF) { minF = currentF }
+        if (currentF > maxF) { maxF = currentF }
+        console.log(minF, maxF, index, currentF);
+
+      }
+      const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/handdrum-loop.mp3");
+      player.autostart = true;
+      // const filter = new Tone.AutoFilter(4).start();
+      // const distortion = new Tone.Distortion(0.5);
+      // connect the player to the filter, distortion and then to the master output
+
+      player.chain(filter, Tone.Destination)
+      // player.chain(filter, distortion, Tone.Destination);
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <h1>Simple HTML5 Tone.js Demo</h1>
+  <button type="button" onclick="playNote()">Click me to play note!</button>
+  <button type="button" onclick="playFiltered()">Click me to play filtered!</button>
+</body>
+
+</html>
